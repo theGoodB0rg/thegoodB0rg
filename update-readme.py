@@ -112,4 +112,175 @@ def detect_stack(owner, repo):
             try:
                 data = SESSION.get(f"{GITHUB_API}/repos/{owner}/{repo}/contents/requirements.txt").json()
                 if isinstance(data, dict) and "content" in data:
-                    content = base64.b64decode(data["content"]).decode("utf-8
+                    content = base64.b64decode(data["content"]).decode("utf-8", errors="ignore").lower()
+                    if "django" in content:
+                        stacks.add("Django")
+                    if "flask" in content:
+                        stacks.add("Flask")
+                    if "fastapi" in content:
+                        stacks.add("FastAPI")
+                    if any(db in content for db in ["psycopg2", "sqlalchemy", "pymongo", "redis", "mysqlclient"]):
+                        stacks.add("Databases")
+            except Exception:
+                pass
+
+    if file_exists(owner, repo, "go.mod"):
+        stacks.add("Go")
+        try:
+            data = SESSION.get(f"{GITHUB_API}/repos/{owner}/{repo}/contents/go.mod").json()
+            if isinstance(data, dict) and "content" in data:
+                content = base64.b64decode(data["content"]).decode("utf-8", errors="ignore").lower()
+                if "github.com/gin-gonic/gin" in content:
+                    stacks.add("Gin")
+                if "github.com/gofiber/fiber" in content:
+                    stacks.add("Fiber")
+                if "github.com/labstack/echo" in content:
+                    stacks.add("Echo")
+                if "github.com/gorilla/mux" in content:
+                    stacks.add("Gorilla Mux")
+        except Exception:
+            pass
+
+    if file_exists(owner, repo, "Cargo.toml"):
+        stacks.add("Rust")
+    if file_exists(owner, repo, "pom.xml") or file_exists(owner, repo, "build.gradle") or file_exists(owner, repo, "build.gradle.kts"):
+        stacks.add("JVM")
+    if file_exists(owner, repo, "composer.json"):
+        stacks.add("PHP")
+    if file_exists(owner, repo, "Gemfile"):
+        stacks.add("Ruby")
+    if any(p.endswith(".csproj") for p in list_repo_paths(owner, repo)):
+        stacks.add(".NET")
+    if file_exists(owner, repo, "pubspec.yaml"):
+        stacks.add("Flutter")
+    return stacks
+
+def aggregate_languages(repos):
+    lang_bytes = Counter()
+    for r in repos:
+        langs = repo_languages(r["owner"]["login"], r["name"])
+        for k, v in langs.items():
+            lang_bytes[k] += v
+    total = sum(lang_bytes.values()) or 1
+    top = lang_bytes.most_common(8)
+    top_pct = [(k, round(v * 100.0 / total, 1)) for k, v in top]
+    return top_pct
+
+def aggregate_stacks(repos):
+    stack_counts = Counter()
+    for r in repos:
+        stacks = detect_stack(r["owner"]["login"], r["name"])
+        for s in stacks:
+            stack_counts[s] += 1
+    return stack_counts.most_common()
+
+def user_achievements(user, repos):
+    stars = sum(r.get("stargazers_count", 0) for r in repos)
+    forks = sum(r.get("forks_count", 0) for r in repos)
+    releases = 0
+    for r in repos:
+        try:
+            rel = gh_get(f"{GITHUB_API}/repos/{r['owner']['login']}/{r['name']}/releases/latest")
+            if rel and isinstance(rel, dict) and rel.get("tag_name"):
+                releases += 1
+        except requests.HTTPError:
+            pass
+    return {"stars": stars, "forks": forks, "repos_with_releases": releases}
+
+def recent_activity(user, days=30, limit=10):
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    events = list(gh_paged(f"{GITHUB_API}/users/{user}/events/public"))
+    items = []
+    for e in events:
+        created = datetime.fromisoformat(e["created_at"].replace("Z", "+00:00"))
+        if created < cutoff:
+            continue
+        et = e.get("type")
+        repo = e.get("repo", {}).get("name", "")
+        if et in ("PushEvent", "PullRequestEvent", "IssuesEvent", "ReleaseEvent"):
+            items.append(f"{created.date()} - {et.replace('Event','')} - {repo}")
+        if len(items) >= limit:
+            break
+    return items
+
+def build_auto_section(data):
+    lines = []
+    lines.append("## Auto-generated snapshot")
+    lines.append("")
+    lines.append(f"- Total Stars: {data['achievements']['stars']}")
+    lines.append(f"- Total Forks: {data['achievements']['forks']}")
+    lines.append(f"- Repos with Releases: {data['achievements']['repos_with_releases']}")
+    lines.append("")
+    lines.append("### Top Languages")
+    lines.append(", ".join([f"{k} ({v}%)" for k, v in data["top_languages"]]) or "N/A")
+    lines.append("")
+    if data["stacks"]:
+        lines.append("### Detected Stacks")
+        lines.append(", ".join([f"{k} ×{v}" for k, v in data["stacks"]]))
+        lines.append("")
+    if data["recent_activity"]:
+        lines.append("### Recent Activity")
+        for a in data["recent_activity"]:
+            lines.append(f"- {a}")
+        lines.append("")
+    lines.append(f"_Last updated: {data['last_updated']}_")
+    return "\n".join(lines)
+
+def build_default_readme(data):
+    lines = []
+    lines.append(f"# Hi, I'm {USER} 👋")
+    lines.append("")
+    lines.append("This profile README updates automatically based on my public work.")
+    lines.append("")
+    lines.append(build_auto_section(data))
+    return "\n".join(lines)
+
+def render_readme(data, template_str=None):
+    if template_str and "{{AUTO_SECTION}}" in template_str:
+        auto = build_auto_section(data)
+        return template_str.replace("{{AUTO_SECTION}}", auto).replace("{{LAST_UPDATED}}", data["last_updated"])
+    else:
+        return build_default_readme(data)
+
+def read_template():
+    try:
+        with open("README.template.md", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return None
+
+def main():
+    if not USER:
+        raise SystemExit("GH_PROFILE_USER or GITHUB_REPOSITORY_OWNER not set")
+    print(f"Generating profile README for {USER}...")
+    repos = list_public_repos(USER)
+    top_languages = aggregate_languages(repos)
+    stacks = aggregate_stacks(repos)
+    achievements = user_achievements(USER, repos)
+    activity = recent_activity(USER, days=30, limit=10)
+    now_str = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+
+    data = {
+        "top_languages": top_languages,
+        "stacks": stacks,
+        "achievements": achievements,
+        "recent_activity": activity,
+        "last_updated": now_str,
+    }
+
+    template = read_template()
+    new_content = render_readme(data, template)
+
+    existing = ""
+    if os.path.exists("README.md"):
+        with open("README.md", "r", encoding="utf-8") as f:
+            existing = f.read()
+    if existing.strip() != new_content.strip():
+        with open("README.md", "w", encoding="utf-8") as f:
+            f.write(new_content)
+        print("README.md updated.")
+    else:
+        print("README.md unchanged.")
+
+if __name__ == "__main__":
+    main()
