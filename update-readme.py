@@ -214,11 +214,11 @@ def build_auto_section(data):
     lines.append(f"- Repos with Releases: {data['achievements']['repos_with_releases']}")
     lines.append("")
     lines.append("### Top Languages")
-    lines.append(", ".join([f"{k} ({v}%)" for k, v in data["top_languages"]]) or "N/A")
+    lines.append(", ".join([f\"{k} ({v}%)\" for k, v in data[\"top_languages\"]]) or "N/A")
     lines.append("")
     if data["stacks"]:
         lines.append("### Detected Stacks")
-        lines.append(", ".join([f"{k} ×{v}" for k, v in data["stacks"]]))
+        lines.append(", ".join([f\"{k} ×{v}\" for k, v in data["stacks"]]))
         lines.append("")
     if data["recent_activity"]:
         lines.append("### Recent Activity")
