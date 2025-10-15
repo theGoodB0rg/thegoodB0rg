@@ -62,19 +62,21 @@ _Last updated: 2025-10-15 20:38 UTC_
 - Cybersecurity study with my team: web app security basics, auth, and secure patterns
 
 ## Tech I use
+<!--START_SECTION:tech_stack-->
 <p>
-  <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000&style=flat"> 
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff&style=flat">
-  <img alt="HTML5" src="https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=fff&style=flat">
-  <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=fff&style=flat">
-  <img alt="React" src="https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=000&style=flat">
-  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=fff&style=flat">
-  <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff&style=flat">
-  <img alt="C#" src="https://img.shields.io/badge/C%23-512BD4?logo=csharp&logoColor=fff&style=flat">
-  <img alt="Git" src="https://img.shields.io/badge/Git-F05032?logo=git&logoColor=fff&style=flat">
-  <img alt="Chrome Extensions" src="https://img.shields.io/badge/Chrome%20Extensions-4285F4?logo=google-chrome&logoColor=fff&style=flat">
+  <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&amp;logoColor=000&amp;style=flat">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&amp;logoColor=fff&amp;style=flat">
+  <img alt="HTML5" src="https://img.shields.io/badge/HTML5-E34F26?logo=html5&amp;logoColor=fff&amp;style=flat">
+  <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?logo=css3&amp;logoColor=fff&amp;style=flat">
+  <img alt="React" src="https://img.shields.io/badge/React-61DAFB?logo=react&amp;logoColor=000&amp;style=flat">
+  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?logo=node.js&amp;logoColor=fff&amp;style=flat">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?logo=python&amp;logoColor=fff&amp;style=flat">
+  <img alt="PHP" src="https://img.shields.io/badge/PHP-777BB4?logo=php&amp;logoColor=fff&amp;style=flat">
+  <img alt="C#" src="https://img.shields.io/badge/C%23-512BD4?logo=csharp&amp;logoColor=fff&amp;style=flat">
+  <img alt="Git" src="https://img.shields.io/badge/Git-F05032?logo=git&amp;logoColor=fff&amp;style=flat">
+  <img alt="Chrome Extensions" src="https://img.shields.io/badge/Chrome%20Extensions-4285F4?logo=google-chrome&amp;logoColor=fff&amp;style=flat">
 </p>
-
+<!--END_SECTION:tech_stack-->
 ## Stats
 <p>
   <img src="https://github-readme-stats.vercel.app/api?username=theGoodB0rg&show_icons=true&rank_icon=github&theme=transparent" alt="GitHub Stats" height="160" />
