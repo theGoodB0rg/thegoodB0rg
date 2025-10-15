@@ -1,0 +1,60 @@
+[
+  {
+    "title": "Keyword Planner Extension",
+    "summary": "Chrome extension that speeds up keyword research workflows for marketers.",
+    "links": [
+      {
+        "label": "Repo",
+        "url": "https://github.com/theGoodB0rg/Keyword-Planner-Extension"
+      }
+    ]
+  },
+  {
+    "title": "Habit Tracker",
+    "summary": "Lightweight habit tracking app focused on streaks, insight, and consistent routines.",
+    "links": [
+      {
+        "label": "Repo",
+        "url": "https://github.com/theGoodB0rg/Habit-Tracker"
+      }
+    ]
+  },
+  {
+    "title": "CyberSec",
+    "summary": "Hands-on labs, notes, and tooling while I build a strong cybersecurity foundation with my team.",
+    "links": [
+      {
+        "label": "Repo",
+        "url": "https://github.com/theGoodB0rg/CyberSec"
+      }
+    ]
+  },
+  {
+    "title": "OIT",
+    "summary": "PHP-based learning platform bundling math calculators, student dashboards, and an admin panel.",
+    "links": [
+      {
+        "label": "Repo",
+        "url": "https://github.com/theGoodB0rg/OIT"
+      }
+    ]
+  },
+  {
+    "title": "49Blox (client work)",
+    "summary": "Production website engagement where I shipped front-end features and supported delivery for a live client.",
+    "links": [
+      {
+        "label": "Site",
+        "url": "https://49blox.com"
+      },
+      {
+        "label": "Repo (Jacen-max)",
+        "url": "https://github.com/Jacen-max/49Blox"
+      },
+      {
+        "label": "Repo (julianhall74)",
+        "url": "https://github.com/julianhall74/49Blox"
+      }
+    ]
+  }
+]
